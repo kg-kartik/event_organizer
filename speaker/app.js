@@ -6,6 +6,7 @@ const avatar = require("./routes/api/avatar");
 const talk = require("./routes/api/talk");
 const speaker = require("./routes/api/speaker");
 const speakerProfile = require("./routes/api/speakerProfile");
+const cors = require("cors");
 
 // Initialze app
 const app = express();
@@ -31,6 +32,8 @@ mongoose
   .catch(error => {
     console.log(error);
   });
+
+app.use(cors());
 
 // Use Route
 app.use("/api/avatar", avatar);
