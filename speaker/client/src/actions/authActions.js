@@ -5,40 +5,42 @@ import jwt_decode from 'jwt-decode';
 
 //Registering user
 export const registerUser = (userData,history) => (dispatch) => {
-    axios.post("/api/speakers/register",userData)
-    .then(() => {
-        history.push("/signin");
+    axios.post("http://localhost:4003/api/speaker/register",userData)
+    .then((response) => {
+        history.push("/login");
     })
     .catch((error) => {
         dispatch({
             type : GET_ERRORS,
-            payload : error.data
+            payload : error
         })
+        console.log(error);
     })
 }
 
 //Login user
 export const loginUser = (userData,history) => (dispatch) => {
-    axios.post("/api/speaker/login",userData)
+    axios.post("http://localhost:4003/api/speaker/login",userData)
     .then((response) => {
         //Saving the token to local storage
         const {token} = response.data;
         localStorage.setItem("token",token);
 
-        //Setting token to Authoirzation header
+        //Setting token to Authorization header
         setAuthToken(token);
 
         //Decoding the access token to get user data
-        const decodedToekn = jwt_decode(token);
+        const decodedToken = jwt_decode(token);
 
         //Passing the decoded token to the setCurrentSpeaker function
-        dispatch(setCurrentSpeaker(decode_token));
+        dispatch(setCurrentSpeaker(decodedToken));
     })
     .catch((error) => {
         dispatch({
             type : GET_ERRORS,
-            payload : error.response.data
+            payload : error
         })
+        console.log(error);
     })
 }
 
@@ -53,7 +55,7 @@ export const setCurrentSpeaker = (decodedToken) => {
 //Logout speaker
 export const logoutSpeaker = () => dispatch => {
     //Remove the tokens from the localStorage
-    localStorage.removeItem("adminJWT");
+    localStorage.removeItem("token");
     
     //Delete the authorization header
     setAuthToken(false);
